@@ -1,0 +1,28 @@
+name: Deploy SNAPSHOT to Maven Central
+on:
+  push:
+    branches:
+    - main
+    - 'releases/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout project
+      uses: actions/checkout@v2
+
+    - name: Set up Java
+      uses: actions/setup-java@v2
+      with:
+        distribution: 'temurin'
+        java-version: '11'
+        server-id: ossrh
+        server-username: MAVEN_USERNAME
+        server-password: MAVEN_CENTRAL_TOKEN
+
+    - name: Publish to Apache Maven Central Snapshot Repo
+      run: mvn -B -ntp source:jar javadoc:jar deploy
+      env:
+        MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
+        MAVEN_CENTRAL_TOKEN: ${{ secrets.MAVEN_CENTRAL_TOKEN }}
