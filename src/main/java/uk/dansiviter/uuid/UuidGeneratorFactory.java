@@ -36,9 +36,18 @@ import java.util.function.Supplier;
  *
  * @see https://datatracker.ietf.org/doc/html/draft-peabody-dispatch-new-uuid-format
  */
-public class UuidGeneratorFactory {
+public enum UuidGeneratorFactory { ;
 	private static final Instant GREGORIAN_EPOCH = LocalDateTime.of(1582, 10, 15, 0, 0, 0).toInstant(UTC);
 	private static final Random RAND = new SecureRandom();
+
+	/**
+	 * Creates a new factory instance supplying type 1 UUIDs using cryptographically strong random node value.
+	 *
+	 * @return a type 1 factory.
+	 */
+	public static Supplier<UUID> type1() {
+		return type1(true);
+	}
 
 	/**
 	 * Creates a new factory instance supplying type 1 UUIDs.
@@ -60,7 +69,7 @@ public class UuidGeneratorFactory {
 	 * @see UUID#randomUUID()
 	 */
 	public static Supplier<UUID> type4() {
-		return () -> UUID.randomUUID();
+		return UUID::randomUUID;
 	}
 
 	/**
@@ -130,9 +139,9 @@ public class UuidGeneratorFactory {
 	 * @param uuid
 	 * @return
 	 */
-	public static UUID v1tov6(UUID uuid) {
+	public static UUID toType6(UUID uuid) {
 		if (uuid.version() != 1) {
-			throw new IllegalArgumentException("Not v1!");
+			throw new UnsupportedOperationException("Only v1 supported!");
 		}
 
 		var msb = uuid.getMostSignificantBits();
@@ -147,7 +156,7 @@ public class UuidGeneratorFactory {
 	/**
 	 * Base time implementation for 1 and 6 types.
 	 */
-	private static abstract class TimeBasedSupplier implements Supplier<UUID> {
+	private abstract static class TimeBasedSupplier implements Supplier<UUID> {
 		private static final int MAX_CLOCK_SEQ = 1 << 14;  // 14 bit
 		private final AtomicInteger clockSeq = new AtomicInteger(RAND.nextInt(MAX_CLOCK_SEQ / 2));
 		private final AtomicLong lastTime = new AtomicLong();
@@ -163,9 +172,7 @@ public class UuidGeneratorFactory {
 		@Override
 		public UUID get() {
 			var time = this.time.getAsLong();
-			var lastTime = this.lastTime.getAndUpdate(v -> {
-				return v != time ? time : v;
-			});
+			var lastTime = this.lastTime.getAndUpdate(v -> v != time ? time : v);
 			var lsb = this.lsb.updateAndGet(v -> v == 0 || lastTime >= time ? leastSigBits() : v);
 			return new UUID(mostSigBits(time), lsb);
 		}
