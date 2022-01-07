@@ -34,7 +34,7 @@ import java.util.function.Supplier;
 /**
  * Creates factories for generating different types of UUIDs.
  *
- * @see https://datatracker.ietf.org/doc/html/draft-peabody-dispatch-new-uuid-format
+ * @see <a href="https://datatracker.ietf.org/doc/html/draft-peabody-dispatch-new-uuid-format">Peabody draft-02</a>
  */
 public enum UuidGeneratorFactory { ;
 	private static final Instant GREGORIAN_EPOCH = LocalDateTime.of(1582, 10, 15, 0, 0, 0).toInstant(UTC);
@@ -98,25 +98,12 @@ public enum UuidGeneratorFactory { ;
 				random ? RAND::nextLong : UuidGeneratorFactory::getMacAddress);
 	}
 
-	/**
-	 *
-	 * @return
-	 */
-	public static long unixEpochTime() {
-		var duration = Duration.between(Instant.EPOCH, Instant.now());
-		return duration.getSeconds() * 10_000_000 + duration.getNano() / 100;
-	}
-
-	/**
-	 *
-	 * @return
-	 */
-	public static long getGregorianEpochTime() {
+	private static long getGregorianEpochTime() {
 		var duration = Duration.between(GREGORIAN_EPOCH, Instant.now());
 		return duration.getSeconds() * 10_000_000 + duration.getNano() / 100;
 	}
 
-	public static long getMacAddress() {
+	private static long getMacAddress() {
 		try {
 			var ni = NetworkInterface.getByInetAddress(InetAddress.getLocalHost());
 			return toLong(ni.getHardwareAddress());
@@ -134,10 +121,10 @@ public enum UuidGeneratorFactory { ;
 	}
 
 	/**
-	 * Converts a Type 1 to Type 6 UUID.
+	 * Converts a UUID to Type 6 UUID.
 	 *
-	 * @param uuid
-	 * @return
+	 * @param uuid UUID to convert. Only Type 1 is supported.
+	 * @return the new Type 6 UUID.
 	 */
 	public static UUID toType6(UUID uuid) {
 		if (uuid.version() != 1) {
