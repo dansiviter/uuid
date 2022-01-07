@@ -59,7 +59,7 @@ class UuidGeneratorFactoryTest {
 		do {
 			uuids.add(generator.get());
 			Thread.sleep(0, 5);  // prevent clock seq exhaustion
-		} while (uuids.size() < 10_000);
+		} while (uuids.size() < 5_000);
 
 		var strings = uuids.stream().map(Object::toString).collect(Collectors.toList());
 		Collections.sort(strings, String.CASE_INSENSITIVE_ORDER);
