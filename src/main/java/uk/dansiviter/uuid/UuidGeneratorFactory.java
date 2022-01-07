@@ -41,6 +41,15 @@ public enum UuidGeneratorFactory { ;
 	private static final Random RAND = new SecureRandom();
 
 	/**
+	 * Creates a new factory instance supplying type 1 UUIDs using cryptographically strong random node value.
+	 *
+	 * @return a type 1 factory.
+	 */
+	public static Supplier<UUID> type1() {
+		return type1(true);
+	}
+
+	/**
 	 * Creates a new factory instance supplying type 1 UUIDs.
 	 *
 	 * @param random if {@code true} then a cryptographically strong random value will be used for the node. If
@@ -130,9 +139,9 @@ public enum UuidGeneratorFactory { ;
 	 * @param uuid
 	 * @return
 	 */
-	public static UUID v1tov6(UUID uuid) {
+	public static UUID toType6(UUID uuid) {
 		if (uuid.version() != 1) {
-			throw new IllegalArgumentException("Not v1!");
+			throw new UnsupportedOperationException("Only v1 supported!");
 		}
 
 		var msb = uuid.getMostSignificantBits();

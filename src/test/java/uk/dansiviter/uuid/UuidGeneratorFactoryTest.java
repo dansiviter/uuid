@@ -15,9 +15,11 @@
  */
 package uk.dansiviter.uuid;
 
+import static java.util.UUID.randomUUID;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,7 +34,15 @@ import org.junit.jupiter.api.Test;
  */
 class UuidGeneratorFactoryTest {
 	@Test
-	void type1() {
+	void type1_random() {
+		var uuid = UuidGeneratorFactory.type1().get();
+
+		assertThat(uuid.version(), is(1));
+		assertThat(uuid.variant(), is(2));
+	}
+
+	@Test
+	void type1_macAddress() {
 		var uuid = UuidGeneratorFactory.type1(false).get();
 
 		assertThat(uuid.version(), is(1));
@@ -47,7 +57,7 @@ class UuidGeneratorFactoryTest {
 	}
 
 	@Test
-	void type6() throws InterruptedException {
+	void type6_random() throws InterruptedException {
 		var generator = UuidGeneratorFactory.type6();
 		var uuid0 = generator.get();
 
@@ -69,5 +79,28 @@ class UuidGeneratorFactoryTest {
 		}
 
 		assertThat(Set.copyOf(strings), hasSize(uuids.size()));  // ensure distinct
+	}
+
+	@Test
+	void type6_macAddress() throws InterruptedException {
+		var generator = UuidGeneratorFactory.type6(false);
+		var uuid0 = generator.get();
+
+		assertThat(uuid0.version(), is(6));
+		assertThat(uuid0.variant(), is(2));
+	}
+
+	@Test
+	void toType6() {
+		var uuidV1 = UuidGeneratorFactory.type1().get();
+		var uuidV6 = UuidGeneratorFactory.toType6(uuidV1);
+
+		assertThat(uuidV6.version(), is(6));
+		assertThat(uuidV6.variant(), is(2));
+	}
+
+	@Test
+	void v1tov6_supported() {
+		assertThrows(UnsupportedOperationException.class, () -> UuidGeneratorFactory.toType6(randomUUID()));
 	}
 }
