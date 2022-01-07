@@ -101,6 +101,7 @@ class UuidGeneratorFactoryTest {
 
 	@Test
 	void v1tov6_supported() {
-		assertThrows(UnsupportedOperationException.class, () -> UuidGeneratorFactory.toType6(randomUUID()));
+		var uuid = randomUUID();
+		assertThrows(UnsupportedOperationException.class, () -> UuidGeneratorFactory.toType6(uuid));
 	}
 }

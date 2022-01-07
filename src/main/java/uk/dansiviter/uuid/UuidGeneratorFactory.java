@@ -156,7 +156,7 @@ public enum UuidGeneratorFactory { ;
 	/**
 	 * Base time implementation for 1 and 6 types.
 	 */
-	private static abstract class TimeBasedSupplier implements Supplier<UUID> {
+	private abstract static class TimeBasedSupplier implements Supplier<UUID> {
 		private static final int MAX_CLOCK_SEQ = 1 << 14;  // 14 bit
 		private final AtomicInteger clockSeq = new AtomicInteger(RAND.nextInt(MAX_CLOCK_SEQ / 2));
 		private final AtomicLong lastTime = new AtomicLong();
