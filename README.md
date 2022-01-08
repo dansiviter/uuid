@@ -7,6 +7,6 @@ A simple Java UUID library that, in addition to older types, implements the Type
 ## Usage
 
 ```java
-var factory = UuidGeneratorFactory.type6();
+var factory = UuidFactories.type6();
 var uuid = factory.get();
 ```

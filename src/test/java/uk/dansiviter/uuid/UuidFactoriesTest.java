@@ -30,12 +30,12 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
 
 /**
- * Tests for {@link UuidGeneratorFactory}.
+ * Tests for {@link UuidFactories}.
  */
-class UuidGeneratorFactoryTest {
+class UuidFactoriesTest {
 	@Test
 	void type1_random() {
-		var uuid = UuidGeneratorFactory.type1().get();
+		var uuid = UuidFactories.type1().get();
 
 		assertThat(uuid.version(), is(1));
 		assertThat(uuid.variant(), is(2));
@@ -43,7 +43,7 @@ class UuidGeneratorFactoryTest {
 
 	@Test
 	void type1_macAddress() {
-		var uuid = UuidGeneratorFactory.type1(false).get();
+		var uuid = UuidFactories.type1(false).get();
 
 		assertThat(uuid.version(), is(1));
 		assertThat(uuid.variant(), is(2));
@@ -51,14 +51,14 @@ class UuidGeneratorFactoryTest {
 
 	@Test
 	void type4() {
-		var uuid = UuidGeneratorFactory.type4().get();
+		var uuid = UuidFactories.type4().get();
 
 		assertThat(uuid.version(), is(4));
 	}
 
 	@Test
 	void type6_random() throws InterruptedException {
-		var generator = UuidGeneratorFactory.type6();
+		var generator = UuidFactories.type6();
 		var uuid0 = generator.get();
 
 		assertThat(uuid0.version(), is(6));
@@ -83,7 +83,7 @@ class UuidGeneratorFactoryTest {
 
 	@Test
 	void type6_macAddress() throws InterruptedException {
-		var generator = UuidGeneratorFactory.type6(false);
+		var generator = UuidFactories.type6(false);
 		var uuid0 = generator.get();
 
 		assertThat(uuid0.version(), is(6));
@@ -92,8 +92,8 @@ class UuidGeneratorFactoryTest {
 
 	@Test
 	void toType6() {
-		var uuidV1 = UuidGeneratorFactory.type1().get();
-		var uuidV6 = UuidGeneratorFactory.toType6(uuidV1);
+		var uuidV1 = UuidFactories.type1().get();
+		var uuidV6 = UuidFactories.toType6(uuidV1);
 
 		assertThat(uuidV6.version(), is(6));
 		assertThat(uuidV6.variant(), is(2));
@@ -102,6 +102,6 @@ class UuidGeneratorFactoryTest {
 	@Test
 	void v1tov6_supported() {
 		var uuid = randomUUID();
-		assertThrows(UnsupportedOperationException.class, () -> UuidGeneratorFactory.toType6(uuid));
+		assertThrows(UnsupportedOperationException.class, () -> UuidFactories.toType6(uuid));
 	}
 }
