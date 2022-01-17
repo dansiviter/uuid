@@ -36,7 +36,7 @@ import java.util.function.Supplier;
  *
  * @see <a href="https://datatracker.ietf.org/doc/html/draft-peabody-dispatch-new-uuid-format">Peabody draft-02</a>
  */
-public enum UuidGeneratorFactory { ;
+public enum UuidFactories { ;
 	private static final Instant GREGORIAN_EPOCH = LocalDateTime.of(1582, 10, 15, 0, 0, 0).toInstant(UTC);
 	private static final Random RAND = new SecureRandom();
 
@@ -58,8 +58,8 @@ public enum UuidGeneratorFactory { ;
 	 */
 	public static Supplier<UUID> type1(boolean random) {
 		return new Type1Supplier(
-			UuidGeneratorFactory::getGregorianEpochTime,
-			random ? RAND::nextLong : UuidGeneratorFactory::getMacAddress);
+			UuidFactories::getGregorianEpochTime,
+			random ? RAND::nextLong : UuidFactories::getMacAddress);
 	}
 
 	/**
@@ -94,8 +94,8 @@ public enum UuidGeneratorFactory { ;
 	 */
 	public static Supplier<UUID> type6(boolean random) {
 		return new Type6Supplier(
-				UuidGeneratorFactory::getGregorianEpochTime,
-				random ? RAND::nextLong : UuidGeneratorFactory::getMacAddress);
+				UuidFactories::getGregorianEpochTime,
+				random ? RAND::nextLong : UuidFactories::getMacAddress);
 	}
 
 	private static long getGregorianEpochTime() {
