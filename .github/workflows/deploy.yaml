@@ -22,7 +22,7 @@ jobs:
         server-password: MAVEN_CENTRAL_TOKEN
 
     - name: Publish to Apache Maven Central Snapshot Repo
-      run: mvn -B -ntp source:jar javadoc:jar deploy sonar:sonar "-Dsonar.coverage.jacoco.xmlReportPaths=**/target/site/jacoco.xml"
+      run: mvn -B -ntp verify source:jar javadoc:jar sonar:sonar deploy "-Dsonar.coverage.jacoco.xmlReportPaths=**/target/site/jacoco.xml"
       env:
         MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
         MAVEN_CENTRAL_TOKEN: ${{ secrets.MAVEN_CENTRAL_TOKEN }}
